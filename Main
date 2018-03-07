@@ -1,0 +1,111 @@
+/Sebastian Grygorczuk
+
+ //Function that compares values, used by the qsort.
+ int compare (const void * a, const void * b)
+ {
+   return ( *(int*)a - *(int*)b );
+ }
+
+ //Finds the parent index of the nth number
+ int FindRoot(int *A, int a)
+ {
+     if(A[a] != a)
+     {
+         FindRoot(A,A[a]);
+     }
+     else
+     {
+     return A[a];
+     }
+ }
+
+ //Puts two trees into a union
+ void Union (int *index, int *ranks, int a, int b)
+ {
+     int aRoot = FindRoot(index,a);
+     int bRoot = FindRoot(index,b);
+
+     if(aRoot == bRoot)
+     {}
+     else
+     {
+         if(ranks[aRoot]  ranks[bRoot])
+         {
+             index[bRoot] = index[aRoot];
+             ranks[aRoot]++;
+         }
+         else if (ranks[bRoot]  ranks[aRoot])
+         {
+             index[aRoot] = index[bRoot];
+             ranks[bRoot]++;
+         }
+         else
+         {
+             index[bRoot] = index[aRoot];
+             ranks[aRoot]++;
+         }
+     }
+ }
+
+ int MST(int n, int *cost, int limit)
+ {
+     //Creates the basic parts of a union set
+     int index[n];
+     int ranks[n];
+     for(int i = 0; i < n; i++)
+     {
+         index[i] = i;
+         ranks[i] = 0;
+     }
+
+     //Creates an arrays that manipulate the provided data, while eliminating
+     //Anything below limit.
+     int Array[n][n];
+     int weight[n*(n-1)];
+     int counter = 0;
+
+     for(int i = 0; i < n; i++)
+     {
+         for( int j = 0;j < n; j++)
+         {
+             if((*cost = limit) || (*cost == 0) || (j < i))
+             {
+                 Array[i][j] = 0;
+             }
+             else
+             {
+                 Array[i][j] = *cost;
+                 weight[counter] = *cost;
+                 counter++;
+             }
+
+             *cost++;
+         }
+     }
+
+     //Sorts the list with
+     qsort(weight,counter,sizeof(int),compare);
+
+     int sum = 0;
+     int counterTwo = 0;
+
+     //Unifes the forest while counting the weight of the tree
+     while(counterTwo != counter)
+     {
+     for(int i = 0; i < n; i++)
+     {
+         for(int j = 0; j < n; j++)
+         {
+             if(Array[i][j] == weight[counterTwo] && FindRoot(index, i) !=
+ FindRoot(index, j) )
+             {
+                 Union(index, ranks, i,j);
+                 sum += Array[i][j];
+             }
+         }
+     }
+     counterTwo++;
+     }
+
+     return sum;
+ }
